@@ -1,5 +1,6 @@
 package com.subrutin.catalog.web;
 
+import org.springframework.util.StopWatch;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RestController;
@@ -8,7 +9,9 @@ import com.subrutin.catalog.dto.BookDetailDTO;
 import com.subrutin.catalog.service.BookService;
 
 import lombok.AllArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
+@Slf4j
 @AllArgsConstructor
 @RestController
 public class BookResources {
@@ -19,7 +22,12 @@ public class BookResources {
 	public BookDetailDTO findBookDetail(@PathVariable("bookId") Long id) {
 		// Menggunakan layanan bookService untuk mencari detail buku berdasarkan ID yang
 		// diberikan
-		return bookService.findBookDetailById(id);
+		StopWatch stopWatch = new StopWatch();
+		log.info("start findBookDetail " + id);
+		BookDetailDTO result = bookService.findBookDetailById(id);
+		log.info("finish findBookDetail. execution time = {}", stopWatch);
+		return result;
+
 	}
 }
 
