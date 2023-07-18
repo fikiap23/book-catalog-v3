@@ -1,5 +1,7 @@
 package com.subrutin.catalog.repository.impl;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
 import com.subrutin.catalog.domain.Book;
@@ -17,4 +19,12 @@ public class BookRepositoryImpl implements BookRepository {
 		Book book = bookMap.get(id);
 		return book;    // Mengembalikan book
 	}
+
+	@Override
+	public List<Book> findAll() {
+	    List<Book> bookList = new ArrayList<>(bookMap.values()); // Membuat daftar baru dengan nilai dari map
+	    
+	    return bookList; // Mengembalikan daftar buku
+	}
+
 }
