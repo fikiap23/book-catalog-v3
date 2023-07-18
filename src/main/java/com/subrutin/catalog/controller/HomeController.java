@@ -11,15 +11,11 @@ import org.springframework.web.bind.annotation.GetMapping;
 @Controller
 public class HomeController {
 
-	/**
-	 * Menangani permintaan GET untuk halaman utama.
-	 * 
-	 * @param model objek model untuk tampilan
-	 * @return nama tampilan logis untuk halaman utama
-	 */
+
 	@GetMapping("/home")
 //	@RequestMapping(value = "/home",method = RequestMethod.GET)
 	public String home(Model model) {
+		model.addAttribute("name", "Fiki");
 		return "home";
 	}
 }
