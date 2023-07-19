@@ -4,6 +4,8 @@ import java.util.List;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
+import org.springframework.validation.Errors;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -13,6 +15,7 @@ import com.subrutin.catalog.dto.BookCreateDTO;
 import com.subrutin.catalog.dto.BookDetailDTO;
 import com.subrutin.catalog.service.BookService;
 
+import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 
 @AllArgsConstructor
@@ -40,7 +43,14 @@ public class BookController {
 
 	// Menambahkan buku baru berdasarkan data yang dikirimkan melalui formulir
 	@PostMapping("/new")
-	public String addNewBook(@ModelAttribute("bookCreateDTO") BookCreateDTO dto, Model model) {
+	public String addNewBook(@ModelAttribute("bookCreateDTO") @Valid BookCreateDTO dto, 
+			BindingResult bindingResult, Errors errors, Model model) {
+		
+		if(errors.hasErrors()) {
+			model.addAttribute("bookCreateDTO",dto);
+			return "book/book-new";
+		}
+		
 		bookService.createNewBook(dto); // Memanggil layanan untuk membuat buku baru berdasarkan DTO yang diberikan
 		return "redirect:/book/list"; // Mengalihkan ke halaman daftar buku setelah buku baru ditambahkan
 	}
