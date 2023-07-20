@@ -3,6 +3,7 @@ package com.subrutin.catalog.web;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -30,7 +31,7 @@ public class HelloResources {
      * @return pesan salam sebagai String.
      */
     @GetMapping("/hello")
-    public HelloMessageResponseDTO helloWorld() {
+    public ResponseEntity<HelloMessageResponseDTO>  helloWorld() {
     	log.trace("this is log TRACE");
     	log.debug("this is log DEBUG");
     	log.info("this is log INFO");
@@ -39,7 +40,7 @@ public class HelloResources {
     	HelloMessageResponseDTO dto = new HelloMessageResponseDTO();
     	dto.setMessage(greetingService.sayGreeting());
 
-        return dto;
+        return ResponseEntity.ok().body(dto);
     }
 
 }
