@@ -5,7 +5,9 @@ import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Service;
 
+import com.subrutin.catalog.domain.Author;
 import com.subrutin.catalog.domain.Book;
+import com.subrutin.catalog.dto.BookCreateDTO;
 import com.subrutin.catalog.dto.BookDetailDTO;
 import com.subrutin.catalog.repository.BookRepository;
 import com.subrutin.catalog.service.BookService;
@@ -48,6 +50,19 @@ public class BookServiceImpl implements BookService {
 	        
 	        return dto; // Mengembalikan objek BookDetailDTO yang telah diisi
 	    }).collect(Collectors.toList()); // Mengumpulkan objek BookDetailDTO menjadi List
+	}
+
+	@Override
+	public void createNewBook(BookCreateDTO dto) {
+		Author author = new Author();
+		author.setName(dto.getAuthorName());
+		
+		Book book = new Book();
+		book.setAuthor(author);
+		book.setTitle(dto.getBookTitle());
+		book.setDescription(dto.getDescription());
+		bookRepository.save(book);
+		
 	}
 
 }

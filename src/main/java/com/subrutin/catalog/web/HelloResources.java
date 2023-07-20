@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.subrutin.catalog.dto.HelloMessageResponseDTO;
 import com.subrutin.catalog.service.GreetingService;
 
 @RestController
@@ -29,14 +30,16 @@ public class HelloResources {
      * @return pesan salam sebagai String.
      */
     @GetMapping("/hello")
-    public String helloWorld() {
+    public HelloMessageResponseDTO helloWorld() {
     	log.trace("this is log TRACE");
     	log.debug("this is log DEBUG");
     	log.info("this is log INFO");
     	log.warn("this is log WARM");
     	log.error("this is log ERROR");
+    	HelloMessageResponseDTO dto = new HelloMessageResponseDTO();
+    	dto.setMessage(greetingService.sayGreeting());
 
-        return greetingService.sayGreeting();
+        return dto;
     }
 
 }
