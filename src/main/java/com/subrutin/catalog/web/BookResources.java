@@ -8,11 +8,13 @@ import org.springframework.util.StopWatch;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.subrutin.catalog.dto.BookCreateDTO;
 import com.subrutin.catalog.dto.BookDetailDTO;
+import com.subrutin.catalog.dto.BookUpdateRequestDTO;
 import com.subrutin.catalog.service.BookService;
 
 import lombok.AllArgsConstructor;
@@ -47,6 +49,13 @@ public class BookResources {
 	@GetMapping("/book")
 	public ResponseEntity<List<BookDetailDTO>> findBookList() {
 		return ResponseEntity.ok().body(bookService.findBookListDetail());
+	}
+
+	@PutMapping("/book/{BookId}")
+	public ResponseEntity<Void> updateBook(@PathVariable Long BookId, @RequestBody BookUpdateRequestDTO dto) {
+		bookService.updateBook(BookId, dto);
+		return ResponseEntity.ok().build();
+
 	}
 
 }
