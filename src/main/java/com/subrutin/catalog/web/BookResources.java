@@ -1,10 +1,16 @@
 package com.subrutin.catalog.web;
 
+import java.net.URI;
+
+import org.springframework.http.ResponseEntity;
 import org.springframework.util.StopWatch;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.subrutin.catalog.dto.BookCreateDTO;
 import com.subrutin.catalog.dto.BookDetailDTO;
 import com.subrutin.catalog.service.BookService;
 
@@ -29,6 +35,15 @@ public class BookResources {
 		return result;
 
 	}
+	
+	@PostMapping("/book")
+	public ResponseEntity<Void> createANewBook(@RequestBody BookCreateDTO dto) {
+		bookService.createNewBook(dto);
+		return ResponseEntity.created(URI.create("/book")).build();
+		
+	}
+	
+	
 }
 
 //Tentu! Berikut adalah penjelasan tentang anotasi `@AllArgsConstructor` dan `@RestController`:
