@@ -19,8 +19,12 @@ import lombok.NoArgsConstructor;
 @Table(name = "author")
 public class Author {
 
+	//strategy yg palim umum digunakan untuk generatedValue
+	// GenerationType.SEQUENCE -> pros: enable batch insert
+	//GenerationType.IDENTITY -> cons: batch insert disabled
+	//IDENTITY agar bisa batch insert -> stored producured
 	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	@GeneratedValue(strategy = GenerationType.SEQUENCE)
 	private Long id; // ID penulis(PK)
 
 	@Column(name = "author_name",nullable = false, columnDefinition = "varchar(300)")
