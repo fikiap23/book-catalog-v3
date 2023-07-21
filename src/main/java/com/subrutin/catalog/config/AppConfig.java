@@ -17,7 +17,7 @@ public class AppConfig {
 	@Bean
 	public Author author() {
 		// Membuat instance dari kelas Author dengan nilai-nilai yang ditentukan
-		return new Author(1L, "Fiki Aprian", null);
+		return new Author(1L, "Fiki Aprian", null,false);
 	}
 	
 	@Bean

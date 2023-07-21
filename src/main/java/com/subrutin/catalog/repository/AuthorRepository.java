@@ -17,5 +17,7 @@ public interface AuthorRepository extends JpaRepository<Author, Long>{
 	
 	//sql -> select a from Author a where a.author_name LIKE : authorName
 	public List<Author> findByNameLike(String authorName);
+	
+	public Optional<Author> findByIdAndDeletedFalse(Long id);
  
 }
