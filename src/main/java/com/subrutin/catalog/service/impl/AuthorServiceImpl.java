@@ -25,7 +25,7 @@ public class AuthorServiceImpl implements AuthorService {
 	@Override
 	public AuthorResponseDTO findAuthorById(Long id) {
 		// 1.fetch data from database
-		Author author = authorRepository.findByIdAndDeletedFalse(id).orElseThrow(() -> new BadRequestException("invalid.authorId"));
+		Author author = authorRepository.findById(id).orElseThrow(() -> new BadRequestException("invalid.authorId"));
 		// 2.author -> authorResponseDTO
 		AuthorResponseDTO dto = new AuthorResponseDTO();
 		dto.setAuthorName(author.getName());
@@ -40,6 +40,7 @@ public class AuthorServiceImpl implements AuthorService {
 			Author author = new Author();
 			author.setName(dto.getAuthorName());
 			author.setBirthDate(LocalDate.ofEpochDay(dto.getBirthDate()));
+			author.setDeleted(Boolean.FALSE);
 			return author;
 		}).collect(Collectors.toList());
 
@@ -50,7 +51,7 @@ public class AuthorServiceImpl implements AuthorService {
 	@Override
 	public void updateAuthor(Long authorId, AuthorUpdateRequestDTO dto) {
 		// 1.cariauthor yg akan di update
-		Author author = authorRepository.findByIdAndDeletedFalse(authorId)
+		Author author = authorRepository.findById(authorId)
 				.orElseThrow(() -> new BadRequestException("invalid.authorId"));
 		author.setName(dto.getAuthorName() == null ? author.getName() : dto.getAuthorName());
 		author.setBirthDate(
@@ -65,14 +66,14 @@ public class AuthorServiceImpl implements AuthorService {
 		//2. delete
 		//or
 		//1.delete (hard delete)
-//		authorRepository.deleteById(authorId);
+		authorRepository.deleteById(authorId);
 		
-		//softdelete
-		//1. select data deleted=false
-		Author author= authorRepository.findByIdAndDeletedFalse(authorId).orElseThrow(() -> new BadRequestException("invalid.authorId"));
-		//2. update deleted=true
-		author.setDeleted(Boolean.TRUE);
-		authorRepository.save(author);
+//		//softdelete
+//		//1. select data deleted=false
+//		Author author= authorRepository.findByIdAndDeletedFalse(authorId).orElseThrow(() -> new BadRequestException("invalid.authorId"));
+//		//2. update deleted=true
+//		author.setDeleted(Boolean.TRUE);
+//		authorRepository.save(author);
 		
 	}
 
