@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 import com.subrutin.catalog.domain.Author;
 import com.subrutin.catalog.dto.AuthorCreateRequestDTO;
 import com.subrutin.catalog.dto.AuthorResponseDTO;
+import com.subrutin.catalog.dto.AuthorUpdateRequestDTO;
 import com.subrutin.catalog.exception.BadRequestException;
 import com.subrutin.catalog.repository.AuthorRepository;
 import com.subrutin.catalog.service.AuthorService;
@@ -34,17 +35,28 @@ public class AuthorServiceImpl implements AuthorService {
 
 	@Override
 	public void createNewAuthor(List<AuthorCreateRequestDTO> dtos) {
-		
-		List<Author> authors= dtos.stream().map(dto -> {
+
+		List<Author> authors = dtos.stream().map(dto -> {
 			Author author = new Author();
 			author.setName(dto.getAuthorName());
 			author.setBirthDate(LocalDate.ofEpochDay(dto.getBirthDate()));
 			return author;
 		}).collect(Collectors.toList());
-		
-		
+
 		authorRepository.saveAll(authors);
-		
+
+	}
+
+	@Override
+	public void updateAuthor(Long authorId, AuthorUpdateRequestDTO dto) {
+		// 1.cariauthor yg akan di update
+		Author author = authorRepository.findById(authorId)
+				.orElseThrow(() -> new BadRequestException("invalid.authorId"));
+		author.setName(dto.getAuthorName() == null ? author.getName() : dto.getAuthorName());
+		author.setBirthDate(
+				dto.getBirthDate() == null ? author.getBirthDate() : LocalDate.ofEpochDay(dto.getBirthDate()));
+		authorRepository.save(author);
+
 	}
 
 }

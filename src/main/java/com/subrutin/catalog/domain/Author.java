@@ -1,7 +1,6 @@
 package com.subrutin.catalog.domain;
 
 import java.time.LocalDate;
-
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -17,6 +16,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @Entity
 @Table(name = "author")
+//@DynamicUpdate //gunakan saat kolomnya banyak, biar kalau update cuma kolom yg berubah yg diset
 public class Author {
 
 	//strategy yg palim umum digunakan untuk generatedValue
