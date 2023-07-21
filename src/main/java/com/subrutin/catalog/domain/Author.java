@@ -1,5 +1,13 @@
 package com.subrutin.catalog.domain;
 
+import java.time.LocalDate;
+
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -7,14 +15,19 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
+@Entity
+@Table(name = "author")
 public class Author {
 
-	private Long id; // ID penulis
+	@Id
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	private Long id; // ID penulis(PK)
 
+	@Column(name = "author_name",nullable = false, columnDefinition = "varchar(300)")
 	private String name; // Nama penulis
 
-	private Long birthDate; // Tanggal lahir penulis
+	@Column(name = "birth_date", nullable = false)
+	private LocalDate birthDate; // Tanggal lahir penulis
 
-	// Konstruktor dengan menggunakan lombok annotation @AllArgsConstructor
-	// untuk menginisialisasi semua properti objek Author
+
 }
