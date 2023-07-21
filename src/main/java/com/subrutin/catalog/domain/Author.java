@@ -31,8 +31,8 @@ public class Author {
 	//GenerationType.IDENTITY -> cons: batch insert disabled
 	//IDENTITY agar bisa batch insert -> stored producured
 	@Id
-	@GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "author_generator")
-	@SequenceGenerator(name = "author_generator", sequenceName = "author_id_seq") //gunakan saat ada lebih satu tabel
+	@GeneratedValue(strategy = GenerationType.SEQUENCE)
+//	@SequenceGenerator(name = "author_generator", sequenceName = "author_id_seq") //gunakan saat ada lebih satu tabel
 	private Long id; // ID penulis(PK)
 
 	@Column(name = "author_name",nullable = false, columnDefinition = "varchar(300)")
