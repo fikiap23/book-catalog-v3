@@ -44,6 +44,14 @@ public class Book implements Serializable {
 			@JoinColumn(name = "book_id", referencedColumnName = "id") }, inverseJoinColumns = {
 					@JoinColumn(name = "author_id", referencedColumnName = "id") })
 	private List<Author> authors;
+	
+	@ManyToMany
+	@JoinTable(name="book_category", joinColumns = {
+			@JoinColumn(name="book_id",referencedColumnName = "id")},
+	inverseJoinColumns = {
+			@JoinColumn(name="category_code", referencedColumnName = "code")
+	})
+	private List<Category> categories;
 
 	// Implementasi interface Serializable memungkinkan objek Book
 	// dapat diserialisasi, yaitu dikonversi menjadi bentuk yang dapat
