@@ -1,5 +1,6 @@
 package com.subrutin.catalog.domain;
 
+import java.io.Serializable;
 import java.time.LocalDate;
 
 import org.hibernate.annotations.SQLDelete;
@@ -24,15 +25,20 @@ import lombok.NoArgsConstructor;
 //@DynamicUpdate //gunakan saat kolomnya banyak, biar kalau update cuma kolom yg berubah yg diset
 @SQLDelete(sql = "UPDATE author SET deleted = true WHERE id = ?")
 @Where(clause = "deleted=false")
-public class Author {
+public class Author implements Serializable{
+
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 4415917570527208430L;
 
 	//strategy yg palim umum digunakan untuk generatedValue
 	// GenerationType.SEQUENCE -> pros: enable batch insert
 	//GenerationType.IDENTITY -> cons: batch insert disabled
 	//IDENTITY agar bisa batch insert -> stored producured
 	@Id
-	@GeneratedValue(strategy = GenerationType.SEQUENCE)
-//	@SequenceGenerator(name = "author_generator", sequenceName = "author_id_seq") //gunakan saat ada lebih satu tabel
+	@GeneratedValue(strategy = GenerationType.SEQUENCE,generator = "author_generator")
+	@SequenceGenerator(name = "author_generator", sequenceName = "author_id_seq") //gunakan saat ada lebih satu tabel
 	private Long id; // ID penulis(PK)
 
 	@Column(name = "author_name",nullable = false, columnDefinition = "varchar(300)")
