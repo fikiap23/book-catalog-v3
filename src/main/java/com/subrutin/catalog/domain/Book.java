@@ -1,6 +1,5 @@
 package com.subrutin.catalog.domain;
 
-import java.io.Serializable;
 import java.util.List;
 
 import jakarta.persistence.Column;
@@ -18,7 +17,7 @@ import lombok.Data;
 @Data
 @Entity
 @Table(name = "book")
-public class Book implements Serializable {
+public class Book extends AbstractBaseEntity {
 
 	/**
 	 * 

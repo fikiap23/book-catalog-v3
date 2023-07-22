@@ -1,7 +1,7 @@
 package com.subrutin.catalog.domain;
 
-import java.io.Serializable;
 import java.time.LocalDate;
+
 
 import org.hibernate.annotations.SQLDelete;
 import org.hibernate.annotations.Where;
@@ -25,30 +25,31 @@ import lombok.NoArgsConstructor;
 //@DynamicUpdate //gunakan saat kolomnya banyak, biar kalau update cuma kolom yg berubah yg diset
 @SQLDelete(sql = "UPDATE author SET deleted = true WHERE id = ?")
 @Where(clause = "deleted=false")
-public class Author implements Serializable{
-
+public class Author extends AbstractBaseEntity{
+	
+	//postgre-> bigserial
+	//mysql->autoincrement
+	//strategy -> identity -> cons: batch insert disabled
+	//batch insert -> stored producured
+	
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = 4415917570527208430L;
+	private static final long serialVersionUID = -902568521343120182L;
 
-	//strategy yg palim umum digunakan untuk generatedValue
-	// GenerationType.SEQUENCE -> pros: enable batch insert
-	//GenerationType.IDENTITY -> cons: batch insert disabled
-	//IDENTITY agar bisa batch insert -> stored producured
+	//strategy sequence -> pros: enable batch insert
 	@Id
-	@GeneratedValue(strategy = GenerationType.SEQUENCE,generator = "author_generator")
-	@SequenceGenerator(name = "author_generator", sequenceName = "author_id_seq") //gunakan saat ada lebih satu tabel
-	private Long id; // ID penulis(PK)
-
-	@Column(name = "author_name",nullable = false, columnDefinition = "varchar(300)")
-	private String name; // Nama penulis
-
-	@Column(name = "birth_date", nullable = false)
-	private LocalDate birthDate; // Tanggal lahir penulis
+	@GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "author_generator")
+	@SequenceGenerator(name = "author_generator", sequenceName = "author_id_seq")
+	private Long id;
 	
-	@Column(name = "deleted", columnDefinition = "boolean default false")
-	private Boolean deleted;
-
+	
+	@Column(name = "author_name", nullable = false, columnDefinition = "varchar(300)")
+	private String name;
+	
+	@Column(name = "birth_date", nullable = false)
+	private LocalDate birthDate;
+	
+	
 
 }
