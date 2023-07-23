@@ -23,9 +23,9 @@ public class AuthorServiceImpl implements AuthorService {
 	private final AuthorRepository authorRepository;
 
 	@Override
-	public AuthorResponseDTO findAuthorById(Long id) {
+	public AuthorResponseDTO findAuthorById(String id) {
 		// 1.fetch data from database
-		Author author = authorRepository.findById(id).orElseThrow(() -> new BadRequestException("invalid.authorId"));
+		Author author = authorRepository.findBySecureId(id).orElseThrow(() -> new BadRequestException("invalid.authorId"));
 		// 2.author -> authorResponseDTO
 		AuthorResponseDTO dto = new AuthorResponseDTO();
 		dto.setAuthorName(author.getName());
@@ -49,9 +49,9 @@ public class AuthorServiceImpl implements AuthorService {
 	}
 
 	@Override
-	public void updateAuthor(Long authorId, AuthorUpdateRequestDTO dto) {
+	public void updateAuthor(String authorId, AuthorUpdateRequestDTO dto) {
 		// 1.cariauthor yg akan di update
-		Author author = authorRepository.findById(authorId)
+		Author author = authorRepository.findBySecureId(authorId)
 				.orElseThrow(() -> new BadRequestException("invalid.authorId"));
 		author.setName(dto.getAuthorName() == null ? author.getName() : dto.getAuthorName());
 		author.setBirthDate(
@@ -61,12 +61,16 @@ public class AuthorServiceImpl implements AuthorService {
 	}
 
 	@Override
-	public void deleteAuthor(long authorId) {
+	public void deleteAuthor(String authorId) {
 		//1. select data
 		//2. delete
 		//or
 		//1.delete (hard delete)
-		authorRepository.deleteById(authorId);
+//		authorRepository.deleteById(authorId);
+		Author author = authorRepository.findBySecureId(authorId)
+				.orElseThrow(() -> new BadRequestException("invalid.authorId"));
+		
+		authorRepository.delete(author);
 		
 //		//softdelete
 //		//1. select data deleted=false
