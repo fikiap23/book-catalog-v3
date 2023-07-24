@@ -10,7 +10,6 @@ import lombok.Data;
 public class AuthorUpdateRequestDTO {
 	
 	private String authorName;
-	
-	private Long birthDate;
 
+	private Long birthDate;
 }

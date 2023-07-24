@@ -24,61 +24,81 @@ public class AuthorServiceImpl implements AuthorService {
 
 	@Override
 	public AuthorResponseDTO findAuthorById(String id) {
-		// 1.fetch data from database
-		Author author = authorRepository.findBySecureId(id).orElseThrow(() -> new BadRequestException("invalid.authorId"));
-		// 2.author -> authorResponseDTO
-		AuthorResponseDTO dto = new AuthorResponseDTO();
+		// TODO Auto-generated method stub
+		// 1. fetch data from databse
+		Author author = authorRepository.findBySecureId(id)
+				.orElseThrow(() -> new BadRequestException("invalid.authorId"));
+		// 2. author -> authorResponseDTO
+		AuthorResponseDTO dto  = new AuthorResponseDTO();
 		dto.setAuthorName(author.getName());
 		dto.setBirthDate(author.getBirthDate().toEpochDay());
+		
 		return dto;
 	}
 
 	@Override
 	public void createNewAuthor(List<AuthorCreateRequestDTO> dtos) {
 
-		List<Author> authors = dtos.stream().map(dto -> {
+		List<Author> authors= dtos.stream().map((dto)->{
 			Author author = new Author();
 			author.setName(dto.getAuthorName());
 			author.setBirthDate(LocalDate.ofEpochDay(dto.getBirthDate()));
-			author.setDeleted(Boolean.FALSE);
 			return author;
 		}).collect(Collectors.toList());
 
+		
 		authorRepository.saveAll(authors);
-
 	}
 
 	@Override
 	public void updateAuthor(String authorId, AuthorUpdateRequestDTO dto) {
-		// 1.cariauthor yg akan di update
 		Author author = authorRepository.findBySecureId(authorId)
 				.orElseThrow(() -> new BadRequestException("invalid.authorId"));
 		author.setName(dto.getAuthorName() == null ? author.getName() : dto.getAuthorName());
 		author.setBirthDate(
 				dto.getBirthDate() == null ? author.getBirthDate() : LocalDate.ofEpochDay(dto.getBirthDate()));
-		authorRepository.save(author);
-
+		
+		authorRepository.save(author);		
 	}
-
+	
+	// oracle db -> flashback technologies
+	// softdelete
 	@Override
 	public void deleteAuthor(String authorId) {
-		//1. select data
-		//2. delete
-		//or
-		//1.delete (hard delete)
+		// 1 select data
+		// 2 delete
+		// or
+		// 1 delete (harddelete)
 //		authorRepository.deleteById(authorId);
 		Author author = authorRepository.findBySecureId(authorId)
 				.orElseThrow(() -> new BadRequestException("invalid.authorId"));
-		
 		authorRepository.delete(author);
-		
-//		//softdelete
-//		//1. select data deleted=false
-//		Author author= authorRepository.findByIdAndDeletedFalse(authorId).orElseThrow(() -> new BadRequestException("invalid.authorId"));
-//		//2. update deleted=true
+		// softdelete
+		// 1. select data deleted=false
+//		Author author = authorRepository.findByIdAndDeletedFalse(authorId)
+//				.orElseThrow(() -> new BadRequestException("invalid.authorId"));
+//
+//		// 2. update deleted=true
 //		author.setDeleted(Boolean.TRUE);
 //		authorRepository.save(author);
-		
+	}
+
+	@Override
+	public List<Author> findAuthors(List<String> authorIdList) {
+		List<Author> authors = authorRepository.findBySecureIdIn(authorIdList);
+		if (authors.isEmpty())
+			throw new BadRequestException("author cant empty");
+		return authors;
+	}
+
+	@Override
+	public List<AuthorResponseDTO> constructDTO(List<Author> authors) {
+		return authors.stream().map((a)->{
+			AuthorResponseDTO dto = new AuthorResponseDTO();
+			dto.setAuthorName(a.getName());
+			dto.setBirthDate(a.getBirthDate().toEpochDay());
+			return dto;
+		}).collect(Collectors.toList());
 	}
 
 }

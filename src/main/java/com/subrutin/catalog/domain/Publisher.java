@@ -1,4 +1,6 @@
 package com.subrutin.catalog.domain;
+
+import java.io.Serializable;
 import java.util.List;
 
 import jakarta.persistence.Column;

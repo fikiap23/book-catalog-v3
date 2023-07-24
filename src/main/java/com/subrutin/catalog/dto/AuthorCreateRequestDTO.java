@@ -7,14 +7,13 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.Data;
 
-@Data
 @JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
+@Data
 public class AuthorCreateRequestDTO {
-	
+
 	@NotBlank
 	private String authorName;
 	
 	@NotNull
 	private Long birthDate;
-
 }

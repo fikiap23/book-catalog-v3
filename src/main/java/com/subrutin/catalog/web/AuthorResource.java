@@ -22,13 +22,13 @@ import lombok.AllArgsConstructor;
 
 @AllArgsConstructor
 @RestController
-public class AuthorResources {
-
+public class AuthorResource {
+	
 	private final AuthorService authorService;
 	
 	//author detail
 	@GetMapping("/v1/author/{id}/detail")
-	public ResponseEntity<AuthorResponseDTO> findAuthorById(@PathVariable("id") String id){
+	public ResponseEntity<AuthorResponseDTO> findAuthorById(@PathVariable String id){
 		return ResponseEntity.ok().body(authorService.findAuthorById(id));
 	}
 	
@@ -36,19 +36,21 @@ public class AuthorResources {
 	public ResponseEntity<Void> createNewAuthor(@RequestBody @Valid List<AuthorCreateRequestDTO> dto){
 		authorService.createNewAuthor(dto);
 		return ResponseEntity.created(URI.create("/author")).build();
-		
 	}
 	
-	@PutMapping("/v1/author/{id}")
-	public ResponseEntity<Void> updateAuthor (@PathVariable("id") String id, @RequestBody AuthorUpdateRequestDTO dto){
-		authorService.updateAuthor(id, dto);
+	
+	@PutMapping("/v1/author/{authorId}")
+	public ResponseEntity<Void> updateAuthor(@PathVariable String authorId, 
+		 @RequestBody AuthorUpdateRequestDTO dto){
+		authorService.updateAuthor(authorId, dto);
 		return ResponseEntity.ok().build();
 	}
 	
-	 @DeleteMapping("/v1/author/{authorId}")
-	    public ResponseEntity<Void> deleteAuthor(@PathVariable String authorId){
-	        authorService.deleteAuthor(authorId);
-	        return ResponseEntity.ok().build();
-	    }
+	@DeleteMapping("/v1/author/{authorId}")
+	public ResponseEntity<Void> deleteAuthor(@PathVariable String authorId){
+		authorService.deleteAuthor(authorId);
+		return ResponseEntity.ok().build();
+	}
+	
 
 }

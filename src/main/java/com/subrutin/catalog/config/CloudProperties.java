@@ -1,6 +1,5 @@
 package com.subrutin.catalog.config;
 
-
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Configuration;
 
@@ -17,6 +16,4 @@ public class CloudProperties {
 	public void setApiKey(String apiKey) {
 		this.apiKey = apiKey;
 	}
-	
-	
 }

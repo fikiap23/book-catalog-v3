@@ -7,78 +7,99 @@ import org.springframework.stereotype.Service;
 
 import com.subrutin.catalog.domain.Author;
 import com.subrutin.catalog.domain.Book;
-import com.subrutin.catalog.dto.BookCreateDTO;
-import com.subrutin.catalog.dto.BookDetailDTO;
+import com.subrutin.catalog.domain.Category;
+import com.subrutin.catalog.domain.Publisher;
+import com.subrutin.catalog.dto.BookCreateRequestDTO;
+import com.subrutin.catalog.dto.BookDetailResponseDTO;
 import com.subrutin.catalog.dto.BookUpdateRequestDTO;
 import com.subrutin.catalog.exception.BadRequestException;
 import com.subrutin.catalog.repository.BookRepository;
+import com.subrutin.catalog.service.AuthorService;
 import com.subrutin.catalog.service.BookService;
+import com.subrutin.catalog.service.CategoryService;
+import com.subrutin.catalog.service.PublisherService;
 
 import lombok.AllArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
+@Slf4j
 @AllArgsConstructor
 @Service("bookService")
 public class BookServiceImpl implements BookService {
 
-	private final BookRepository bookRepository; // Repository untuk akses data buku
+	private final BookRepository bookRepository;
+	
+	private final AuthorService authorService;
+	
+	private final CategoryService categoryService;
+	
+	private final PublisherService publisherService;
 
 	@Override
-	public BookDetailDTO findBookDetailById(Long bookId) {
-		Book book = bookRepository.findById(bookId).orElseThrow(() -> new BadRequestException("book_id.invalid")); // Mengambil data buku dari repository berdasarkan ID
-		BookDetailDTO dto = new BookDetailDTO(); // Membuat objek DTO baru untuk menyimpan detail buku
-		dto.setBookId(book.getId()); // Mengisi properti DTO dengan nilai-nilai yang sesuai dari objek Book
-//		dto.setAuthorName(book.getAuthor().getName());
+	public BookDetailResponseDTO findBookDetailById(String bookId) {
+		Book book = bookRepository.findBySecureId(bookId)
+				.orElseThrow(()-> new BadRequestException("book_id.invalid"));
+		BookDetailResponseDTO dto = new BookDetailResponseDTO();
+		dto.setBookId(book.getSecureId());
+		dto.setCategories(categoryService.constructDTO(book.getCategories()));
+		dto.setAuthors(authorService.constructDTO(book.getAuthors()));
+		dto.setPublisher(publisherService.constructDTO(book.getPublisher()));
 		dto.setBookTitle(book.getTitle());
 		dto.setBookDescription(book.getDescription());
-		return dto; // Mengembalikan objek DTO dengan detail buku
+		return dto;
 	}
 
+
 	@Override
-	public List<BookDetailDTO> findBookListDetail() {
-		List<Book> books = bookRepository.findAll(); // Mengambil semua buku dari repository
-
-		// Mengonversi setiap objek Book menjadi objek BookDetailDTO
-		return books.stream().map((b) -> {
-			BookDetailDTO dto = new BookDetailDTO(); // Membuat objek BookDetailDTO baru
-
-			// Mengisi informasi buku ke dalam objek BookDetailDTO
-//			dto.setAuthorName(b.getAuthor().getName()); // Mengatur nama penulis buku
-			dto.setBookDescription(b.getDescription()); // Mengatur deskripsi buku
-			dto.setBookId(b.getId()); // Mengatur ID buku
-			dto.setBookTitle(b.getTitle()); // Mengatur judul buku
-
-			return dto; // Mengembalikan objek BookDetailDTO yang telah diisi
-		}).collect(Collectors.toList()); // Mengumpulkan objek BookDetailDTO menjadi List
+	public List<BookDetailResponseDTO> findBookListDetail() {
+		List<Book> books = bookRepository.findAll();
+		return books.stream().map((b)->{
+			BookDetailResponseDTO dto = new BookDetailResponseDTO();
+			dto.setCategories(categoryService.constructDTO(b.getCategories()));
+			dto.setAuthors(authorService.constructDTO(b.getAuthors()));
+			dto.setPublisher(publisherService.constructDTO(b.getPublisher()));
+			dto.setBookId(b.getSecureId());
+			dto.setBookDescription(b.getDescription());
+			dto.setBookTitle(b.getTitle());
+			return dto;
+		}).collect(Collectors.toList());
 	}
 
-	@Override
-	public void createNewBook(BookCreateDTO dto) {
-		Author author = new Author();
-		author.setName(dto.getAuthorName());
 
+	@Override
+	public void createNewBook(BookCreateRequestDTO dto) {
+		List<Author> authors =  authorService.findAuthors(dto.getAuthorIdList());
+		List<Category> categories =  categoryService.findCategories(dto.getCategoryList());
+		Publisher publisher = publisherService.findPublisher(dto.getPublisherId());
 		Book book = new Book();
-//		book.setAuthor(author);
+		book.setAuthors(authors);
+		book.setCategories(categories);
+		book.setPublisher(publisher);
 		book.setTitle(dto.getBookTitle());
 		book.setDescription(dto.getDescription());
 		bookRepository.save(book);
-
+		
 	}
+
 
 	@Override
 	public void updateBook(Long bookId, BookUpdateRequestDTO dto) {
-//		get book from repository
-		Book book = bookRepository.findById(bookId).orElseThrow(() -> new BadRequestException("book_id.invalid"));
-//		update
+		//get book from repository
+		Book book = bookRepository.findById(bookId)
+				.orElseThrow(()-> new BadRequestException("book_id.invalid"));
+		//update
 		book.setTitle(dto.getBookTitle());
 		book.setDescription(dto.getDescription());
-//		save
+		//save
 		bookRepository.save(book);
-
+		
 	}
 
+
 	@Override
-	public void deleteBook(Long BookId) {
-		bookRepository.deleteById(BookId);
+	public void deleteBook(Long bookId) {
+		bookRepository.deleteById(bookId);
+		
 	}
 
 }

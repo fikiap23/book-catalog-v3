@@ -20,13 +20,13 @@ public class BookDetail implements Serializable{
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = -9103446628280403679L;
-	
+	private static final long serialVersionUID = 6589206926946419364L;
+
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
 	
-	@Column(name ="settings")
+	@Column(name = "settings")
 	private String settings;
 	
 	@Column(name = "thumbnail")
@@ -35,5 +35,4 @@ public class BookDetail implements Serializable{
 	@OneToOne
 	@JoinColumn(name = "book_id", nullable = false)
 	private Book book;
-
 }

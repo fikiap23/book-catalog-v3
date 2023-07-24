@@ -13,25 +13,24 @@ import lombok.Data;
 @Entity
 @Table(name = "category")
 @Data
-public class Category implements Serializable{/**
+public class Category implements Serializable {
+	
+	/**
 	 * 
 	 */
-	private static final long serialVersionUID = -6052868310670287516L;
-	
+	private static final long serialVersionUID = -7125859384844185149L;
+
 	@Id
 	@Column(name = "code", nullable = false)
 	private String code;
 	
 	@Column(name = "name", nullable = false)
 	private String name;
-	
-	@Column(name = "description",nullable = true)
+
+	@Column(name = "description", nullable = true)
 	private String description;
 	
-//	unidirectcional
 	@ManyToMany(mappedBy = "categories")
 	private List<Book> books;
-
-
 
 }

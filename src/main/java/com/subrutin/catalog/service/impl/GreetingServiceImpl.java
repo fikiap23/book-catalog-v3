@@ -10,45 +10,32 @@ import com.subrutin.catalog.config.ApplicationProperties;
 import com.subrutin.catalog.config.CloudProperties;
 import com.subrutin.catalog.service.GreetingService;
 
-
 @Service
 public class GreetingServiceImpl implements GreetingService {
-	
 	Logger log = LoggerFactory.getLogger(GreetingServiceImpl.class);
-	
-	private ApplicationProperties appProperties; // Menyimpan objek ApplicationProperties
+
+
+	private ApplicationProperties appProperties;
 	
 	private CloudProperties cloudProperties;
-	
-	/**
-	 * Konstruktor GreetingServiceImpl untuk menyimpan objek ApplicationProperties.
-	 *  Konstruktor dengan Dependency Injection
-	 * @param appProperties Objek ApplicationProperties yang akan disimpan
-	 */
-	
+
 	public GreetingServiceImpl(ApplicationProperties appProperties, CloudProperties cloudProperties) {
 		super();
 		this.appProperties = appProperties;
 		this.cloudProperties = cloudProperties;
 	}
 
-	/**
-	 * Menghasilkan pesan sambutan yang menggabungkan teks sambutan, zona waktu, dan mata uang.
-	 * @return Pesan sambutan
-	 */
 	@Override
 	public String sayGreeting() {
 		log.trace("this is log TRACE");
-    	log.debug("this is log DEBUG");
-    	log.info("this is log INFO");
-    	log.warn("this is log WARM");
-    	log.error("this is log ERROR");
+		log.debug("this is log DEBUG");
+		log.info("this is log INFO");
+		log.warn("this is log WARN");
+		log.error("this is log ERROR");
 		System.out.println(cloudProperties.getApiKey());
-		
-		TimeZone timezone = TimeZone.getTimeZone(appProperties.getTimezone()); // Mendapatkan zona waktu dari ApplicationProperties
-		
-		// Menggabungkan teks sambutan, zona waktu, dan mata uang menjadi satu pesan sambutan
-		return appProperties.getWelcomeText() + ", our timezone: " + timezone.getDisplayName() + ", our currency: "
+		TimeZone timezone = TimeZone.getTimeZone(appProperties.getTimezone());
+		return appProperties.getWelcomeText() + ", our timezone :" + timezone.getDisplayName() + ", our currency:"
 				+ appProperties.getCurrency();
 	}
+
 }

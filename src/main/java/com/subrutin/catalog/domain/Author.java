@@ -2,7 +2,6 @@ package com.subrutin.catalog.domain;
 
 import java.time.LocalDate;
 
-
 import org.hibernate.annotations.SQLDelete;
 import org.hibernate.annotations.Where;
 
@@ -21,10 +20,10 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-@Table(name = "author")
-//@DynamicUpdate //gunakan saat kolomnya banyak, biar kalau update cuma kolom yg berubah yg diset
+//@DynamicUpdate
 @SQLDelete(sql = "UPDATE author SET deleted = true WHERE id = ?")
 @Where(clause = "deleted=false")
+@Table(name = "author")
 public class Author extends AbstractBaseEntity{
 	
 	//postgre-> bigserial
@@ -35,14 +34,13 @@ public class Author extends AbstractBaseEntity{
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = -902568521343120182L;
+	private static final long serialVersionUID = -139238051267804978L;
 
 	//strategy sequence -> pros: enable batch insert
 	@Id
 	@GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "author_generator")
 	@SequenceGenerator(name = "author_generator", sequenceName = "author_id_seq")
 	private Long id;
-	
 	
 	@Column(name = "author_name", nullable = false, columnDefinition = "varchar(300)")
 	private String name;

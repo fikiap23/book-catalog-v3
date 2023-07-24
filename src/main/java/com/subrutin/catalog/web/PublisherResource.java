@@ -14,10 +14,8 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.subrutin.catalog.dto.PublisherCreateRequestDTO;
 import com.subrutin.catalog.dto.PublisherListResponseDTO;
-//import com.subrutin.catalog.dto.PublisherListResponseDTO;
 import com.subrutin.catalog.dto.PublisherUpdateRequestDTO;
 import com.subrutin.catalog.dto.ResultPageResponseDTO;
-//import com.subrutin.catalog.dto.ResultPageResponseDTO;
 import com.subrutin.catalog.service.PublisherService;
 
 import jakarta.validation.Valid;
@@ -25,7 +23,7 @@ import lombok.AllArgsConstructor;
 
 @AllArgsConstructor
 @RestController
-public class PublisherResources {
+public class PublisherResource {
 
 	private final PublisherService publisherService;
 
