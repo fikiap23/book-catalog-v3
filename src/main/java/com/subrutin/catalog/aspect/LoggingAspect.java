@@ -24,7 +24,10 @@ public class LoggingAspect {
 	@Pointcut("@args(com.subrutin.catalog.annotation.LogThisArg)")
 	private void argsAnnotationPointcutExample() {}
 	
-	@Before("restAPI() && argsAnnotationPointcutExample()")
+	@Pointcut("@annotation(com.subrutin.catalog.annotation.LogThisMethod)")
+	private void annotationPoincutExample() {}
+	
+	@Before("annotationPoincutExample()")
 	public void beforeExecutedLogging() {
 		log.info("this is log from aspect");
 	}
