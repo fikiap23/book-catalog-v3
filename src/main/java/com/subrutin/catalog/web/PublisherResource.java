@@ -41,7 +41,7 @@ public class PublisherResource {
 		return ResponseEntity.ok().build();
 	}
 	
-//	@LogThisMethod
+	@LogThisMethod
 	@GetMapping("/v1/publisher")
 	public ResponseEntity<ResultPageResponseDTO<PublisherListResponseDTO>> findPublisherList(
 			@RequestParam(name = "pages", required = true, defaultValue = "0") Integer pages, 

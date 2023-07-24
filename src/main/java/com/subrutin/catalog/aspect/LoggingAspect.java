@@ -1,5 +1,8 @@
 package com.subrutin.catalog.aspect;
 
+import org.aspectj.lang.annotation.After;
+import org.aspectj.lang.annotation.AfterReturning;
+import org.aspectj.lang.annotation.AfterThrowing;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Before;
 import org.aspectj.lang.annotation.Pointcut;
@@ -25,11 +28,28 @@ public class LoggingAspect {
 	private void argsAnnotationPointcutExample() {}
 	
 	@Pointcut("@annotation(com.subrutin.catalog.annotation.LogThisMethod)")
-	private void annotationPoincutExample() {}
+	private void annotationPointcutExample() {}
 	
-	@Before("annotationPoincutExample()")
+	@Before("annotationPointcutExample()")
 	public void beforeExecutedLogging() {
-		log.info("this is log from aspect");
+		log.info("this is log from aspect before method executed");
+	}
+	
+	@After("annotationPointcutExample()")
+	public void afterExecutedLogging() {
+		log.info("this is log from aspect after method executed");
+	}
+
+	
+	@AfterReturning("annotationPointcutExample()")
+	public void afterReturnExecutedLogging() {
+		log.info("this is log from aspect after returning method executed");
+	}
+	
+	
+	@AfterThrowing("annotationPointcutExample()")
+	public void afterThrowingExecutedLogging() {
+		log.info("this is log from aspect after throwing method executed");
 	}
 
 }
