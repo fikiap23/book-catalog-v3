@@ -69,6 +69,10 @@ public class BookServiceImpl implements BookService {
 		List<Book> books = bookRepository.findAll();
 		return books.stream().map((b)->{
 			BookDetailResponseDTO dto = new BookDetailResponseDTO();
+			dto.setCategories(categoryService.constructDTO(b.getCategories()));
+			dto.setAuthors(authorService.constructDTO(b.getAuthors()));
+			dto.setPublisher(publisherService.constructDTO(b.getPublisher()));
+			dto.setBookId(b.getSecureId());
 //			dto.setAuthorName(b.getAuthor().getName());
 			dto.setBookDescription(b.getDescription());
 //			dto.setBookId(b.getId());
