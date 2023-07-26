@@ -24,8 +24,8 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @Entity
 //@DynamicUpdate
-@SQLDelete(sql = "UPDATE author SET deleted = true WHERE id = ?")
-@Where(clause = "deleted=false")
+//@SQLDelete(sql = "UPDATE author SET deleted = true WHERE id = ?")
+//@Where(clause = "deleted=false")
 @Table(name = "author")
 public class Author extends AbstractBaseEntity{
 	
