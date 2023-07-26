@@ -58,26 +58,30 @@ public class AuthorServiceImpl implements AuthorService {
 
 	@Override
 	public void createNewAuthor(List<AuthorCreateRequestDTO> dtos) {
+	    List<Author> authors = dtos.stream().map(dto -> {
+	        Author author = new Author();
+	        author.setName(dto.getAuthorName());
+	        author.setBirthDate(LocalDate.ofEpochDay(dto.getBirthDate()));
 
-		List<Author> authors= dtos.stream().map((dto)->{
-			Author author = new Author();
-			author.setName(dto.getAuthorName());
-			author.setBirthDate(LocalDate.ofEpochDay(dto.getBirthDate()));
-			List<Address> addresses =  dto.getAddresses().stream().map(a->{
-				Address address = new Address();
-				address.setCityName(a.getCityName());
-				address.setStreetName(a.getStreetName());
-				address.setZipCode(a.getZipCode());
-				address.setAuthor(author);
-				return address;
-			}).collect(Collectors.toList());
-			author.setAddresses(addresses);
-			return author;
-		}).collect(Collectors.toList());
+	        // Check if addresses is not null before processing
+	        if (dto.getAddresses() != null) {
+	            List<Address> addresses = dto.getAddresses().stream().map(a -> {
+	                Address address = new Address();
+	                address.setCityName(a.getCityName());
+	                address.setStreetName(a.getStreetName());
+	                address.setZipCode(a.getZipCode());
+	                address.setAuthor(author);
+	                return address;
+	            }).collect(Collectors.toList());
+	            author.setAddresses(addresses);
+	        }
 
-		
-		authorRepository.saveAll(authors);
+	        return author;
+	    }).collect(Collectors.toList());
+
+	    authorRepository.saveAll(authors);
 	}
+
 
 	@Override
 	public void updateAuthor(String authorId, AuthorUpdateRequestDTO dto) {
