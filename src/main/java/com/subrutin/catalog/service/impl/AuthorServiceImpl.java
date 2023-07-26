@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 
 import com.subrutin.catalog.domain.Address;
 import com.subrutin.catalog.domain.Author;
+import com.subrutin.catalog.dto.AddressCreateRequestDTO;
 import com.subrutin.catalog.dto.AuthorCreateRequestDTO;
 import com.subrutin.catalog.dto.AuthorResponseDTO;
 import com.subrutin.catalog.dto.AuthorUpdateRequestDTO;
@@ -36,8 +37,23 @@ public class AuthorServiceImpl implements AuthorService {
 		AuthorResponseDTO dto  = new AuthorResponseDTO();
 		dto.setAuthorName(author.getName());
 		dto.setBirthDate(author.getBirthDate().toEpochDay());
+		  // 3. Map the addresses from Author to AddressDTO
+	    List<AddressCreateRequestDTO> addressDTOList = author.getAddresses().stream()
+	            .map(address ->{
+	            	AddressCreateRequestDTO addressDTO = new AddressCreateRequestDTO();
+	        	    addressDTO.setStreetName(address.getStreetName());
+	        	    addressDTO.setCityName(address.getCityName());
+	        	    addressDTO.setZipCode(address.getZipCode());
+	        	    // ... other mappings if any
+
+	        	    return addressDTO;
+	            } )
+	            .collect(Collectors.toList());
+
+	    dto.setAddresses(addressDTOList);
+
+	    return dto;
 		
-		return dto;
 	}
 
 	@Override
