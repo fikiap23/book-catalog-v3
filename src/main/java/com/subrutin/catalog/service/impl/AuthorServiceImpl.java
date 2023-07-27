@@ -89,6 +89,7 @@ public class AuthorServiceImpl implements AuthorService {
 				.orElseThrow(() -> new BadRequestException("invalid.authorId"));
 		Map<Long, Address> addressMap = author.getAddresses().stream().map(a -> a)
 				.collect(Collectors.toMap(Address::getId, Function.identity()));
+		
 		List<Address> addresses= dto.getAddresses().stream().map(a->{
 			Address address =  addressMap.get(a.getAddressId());
 			address.setCityName(a.getCityName());
