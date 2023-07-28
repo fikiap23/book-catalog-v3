@@ -1,6 +1,8 @@
 package com.subrutin.catalog.service.impl;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Function;
@@ -10,8 +12,8 @@ import org.springframework.stereotype.Service;
 
 import com.subrutin.catalog.domain.Address;
 import com.subrutin.catalog.domain.Author;
-import com.subrutin.catalog.dto.AddressCreateRequestDTO;
 import com.subrutin.catalog.dto.AuthorCreateRequestDTO;
+import com.subrutin.catalog.dto.AuthorQueryDTO;
 import com.subrutin.catalog.dto.AuthorResponseDTO;
 import com.subrutin.catalog.dto.AuthorUpdateRequestDTO;
 import com.subrutin.catalog.exception.BadRequestException;
@@ -37,51 +39,32 @@ public class AuthorServiceImpl implements AuthorService {
 		AuthorResponseDTO dto  = new AuthorResponseDTO();
 		dto.setAuthorName(author.getName());
 		dto.setBirthDate(author.getBirthDate().toEpochDay());
-		  // 3. Map the addresses from Author to AddressDTO
-	    List<AddressCreateRequestDTO> addressDTOList = author.getAddresses().stream()
-	            .map(address ->{
-	            	AddressCreateRequestDTO addressDTO = new AddressCreateRequestDTO();
-	        	    addressDTO.setStreetName(address.getStreetName());
-	        	    addressDTO.setCityName(address.getCityName());
-	        	    addressDTO.setZipCode(address.getZipCode());
-	        	    // ... other mappings if any
-
-	        	    return addressDTO;
-	            } )
-	            .collect(Collectors.toList());
-
-	    dto.setAddresses(addressDTOList);
-
-	    return dto;
 		
+		return dto;
 	}
 
 	@Override
 	public void createNewAuthor(List<AuthorCreateRequestDTO> dtos) {
-	    List<Author> authors = dtos.stream().map(dto -> {
-	        Author author = new Author();
-	        author.setName(dto.getAuthorName());
-	        author.setBirthDate(LocalDate.ofEpochDay(dto.getBirthDate()));
 
-	        // Check if addresses is not null before processing
-	        if (dto.getAddresses() != null) {
-	            List<Address> addresses = dto.getAddresses().stream().map(a -> {
-	                Address address = new Address();
-	                address.setCityName(a.getCityName());
-	                address.setStreetName(a.getStreetName());
-	                address.setZipCode(a.getZipCode());
-	                address.setAuthor(author);
-	                return address;
-	            }).collect(Collectors.toList());
-	            author.setAddresses(addresses);
-	        }
+		List<Author> authors= dtos.stream().map((dto)->{
+			Author author = new Author();
+			author.setName(dto.getAuthorName());
+			author.setBirthDate(LocalDate.ofEpochDay(dto.getBirthDate()));
+			List<Address> addresses =  dto.getAddresses().stream().map(a->{
+				Address address = new Address();
+				address.setCityName(a.getCityName());
+				address.setStreetName(a.getStreetName());
+				address.setZipCode(a.getZipCode());
+				address.setAuthor(author);
+				return address;
+			}).collect(Collectors.toList());
+			author.setAddresses(addresses);
+			return author;
+		}).collect(Collectors.toList());
 
-	        return author;
-	    }).collect(Collectors.toList());
-
-	    authorRepository.saveAll(authors);
+		
+		authorRepository.saveAll(authors);
 	}
-
 
 	@Override
 	public void updateAuthor(String authorId, AuthorUpdateRequestDTO dto) {
@@ -89,7 +72,6 @@ public class AuthorServiceImpl implements AuthorService {
 				.orElseThrow(() -> new BadRequestException("invalid.authorId"));
 		Map<Long, Address> addressMap = author.getAddresses().stream().map(a -> a)
 				.collect(Collectors.toMap(Address::getId, Function.identity()));
-		
 		List<Address> addresses= dto.getAddresses().stream().map(a->{
 			Address address =  addressMap.get(a.getAddressId());
 			address.setCityName(a.getCityName());
@@ -145,6 +127,24 @@ public class AuthorServiceImpl implements AuthorService {
 			dto.setBirthDate(a.getBirthDate().toEpochDay());
 			return dto;
 		}).collect(Collectors.toList());
+	}
+
+	@Override
+	public Map<Long, List<String>> findAuthorMaps(List<Long> bookIdList) {
+		List<AuthorQueryDTO> queryList =  authorRepository.findAuthorsByBookIdList(bookIdList);
+		Map<Long, List<String>> authorMap = new HashMap<>();
+		List<String> authorList = null;
+		for(AuthorQueryDTO q:queryList) {
+			if(!authorMap.containsKey(q.getBookId())) {
+				authorList = new ArrayList<>();
+			}else {
+				authorList = authorMap.get(q.getBookId());
+			}
+			
+			authorList.add(q.getAuthorName());
+			authorMap.put(q.getBookId(), authorList);
+		}
+		return authorMap;
 	}
 
 }
