@@ -2,9 +2,9 @@ package com.subrutin.catalog.web;
 
 import java.net.URI;
 
-
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -22,8 +22,10 @@ import com.subrutin.catalog.exception.BadRequestException;
 import com.subrutin.catalog.service.PublisherService;
 
 import jakarta.validation.Valid;
+import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 
+@Validated
 @AllArgsConstructor
 @RestController
 public class PublisherResource {
@@ -39,23 +41,26 @@ public class PublisherResource {
 
 	@PreAuthorize("hasRole('ADMIN')")
 	@PutMapping("/v1/publisher/{publisherId}")
-	public ResponseEntity<Void> updatePublisher(@PathVariable String publisherId,
+	public ResponseEntity<Void> updatePublisher(
+			@PathVariable @Size(max = 36, min = 36, message = "publisher.id.not.uuid") String publisherId,
 			@RequestBody @Valid PublisherUpdateRequestDTO dto) {
 		publisherService.updatePublisher(publisherId, dto);
 		return ResponseEntity.ok().build();
 	}
-	
+
 	@PreAuthorize("isAuthenticated()")
 	@LogThisMethod
 	@GetMapping("/v1/publisher")
 	public ResponseEntity<ResultPageResponseDTO<PublisherListResponseDTO>> findPublisherList(
-			@RequestParam(name = "pages", required = true, defaultValue = "0") Integer pages, 
+			@RequestParam(name = "pages", required = true, defaultValue = "0") Integer pages,
 			@RequestParam(name = "limit", required = true, defaultValue = "10") Integer limit,
-			@RequestParam(name="sortBy", required = true, defaultValue = "name") String sortBy,
-			@RequestParam(name="direction", required = true, defaultValue = "asc") String direction,
-			@RequestParam(name="publisherName", required = false) String publisherName){
-		if(pages<0) throw new BadRequestException("invalid pages");
-		return ResponseEntity.ok().body(publisherService.findPublisherList(pages, limit, sortBy, direction, publisherName));
+			@RequestParam(name = "sortBy", required = true, defaultValue = "name") String sortBy,
+			@RequestParam(name = "direction", required = true, defaultValue = "asc") String direction,
+			@RequestParam(name = "publisherName", required = false) String publisherName) {
+		if (pages < 0)
+			throw new BadRequestException("invalid pages");
+		return ResponseEntity.ok()
+				.body(publisherService.findPublisherList(pages, limit, sortBy, direction, publisherName));
 	}
 
 }
